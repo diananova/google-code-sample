@@ -12,10 +12,7 @@ def _csv_reader_with_strip(reader):
 
 
 class VideoLibrary:
-    """A class used to represent a Video Library."""
-
     def __init__(self):
-        """The VideoLibrary class is initialized."""
         self._videos = {}
         with open(Path(__file__).parent / "videos.txt") as video_file:
             reader = _csv_reader_with_strip(
@@ -29,17 +26,38 @@ class VideoLibrary:
                 )
 
     def get_all_videos(self):
-        """Returns all available video information from the video library."""
         return list(self._videos.values())
 
     def get_video(self, video_id):
-        """Returns the video object (title, url, tags) from the video library.
-
-        Args:
-            video_id: The video url.
-
-        Returns:
-            The Video object for the requested video_id. None if the video
-            does not exist.
-        """
         return self._videos.get(video_id, None)
+    
+    def search_videos_by_term(self, term):
+        counter = 1
+        result = {}
+        for v in self._videos:
+            if self._videos[v].title_contains_term(term):
+                if counter==1:
+                    print(f"Here are the results for {term}:")
+                print(f"{counter})",end=' ')
+                print(self._videos[v].format())
+                result[counter] = self._videos[v].video_id
+                counter+=1
+        if counter==1:
+            print(f"No search results for {term}")
+        return result
+    
+    def search_videos_by_tag(self, tag):
+        counter = 1
+        result = {}
+        for v in self._videos:
+            if self._videos[v].title_contains_tag(tag):
+                if counter==1:
+                    print(f"Here are the results for {tag}:")
+                print(f"{counter})",end=' ')
+                print(self._videos[v].format())
+                result[counter] = self._videos[v].video_id
+                counter+=1
+        if counter==1:
+            print(f"No search results for {tag}")
+        return result
+        
